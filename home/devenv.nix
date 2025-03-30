@@ -27,7 +27,7 @@
   '';
 
   enterShell = ''
-    exec xonsh --rc "$DEVENV_ROOT/.xonshrc"
+    SHELL=$DEVENV_ROOT/shellcmd $DEVENV_ROOT/shellcmd
   '';
 
   # https://devenv.sh/tasks/

@@ -27,7 +27,7 @@
   '';
 
   enterShell = ''
-    SHELL=xonsh exec vim +"ter ++curwin"
+    SHELL=$DEVENV_ROOT/shellcmd exec vim +"ter ++curwin"
   '';
 
   # https://devenv.sh/tasks/

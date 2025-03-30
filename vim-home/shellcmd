@@ -1,0 +1,2 @@
+exec xonsh --rc $DEVENV_ROOT/.xonshrc
+
