@@ -1,0 +1,58 @@
+#!/usr/bin/env xonsh
+
+import os
+import sys
+import argparse
+
+parser = argparse.ArgumentParser(description="Recursively run gpp on files ending with '.gpp' and '.gpp.*'.")
+parser.add_argument("directory", nargs="?", help="root directory for traversal (defaults to '.' if not present)", default=None)
+parser.add_argument("--silent", action="store_true", help="suppress gpp invocation output")
+parser.add_argument("--clean", action="store_true", help="delete output files rather than generating them (ignored if --command or --watch is specified)")
+parser.add_argument("--command", type=str, help="generate files, run command (e.g. shell session), then clean and exit (ignored if --watch is specified)", default=None)
+parser.add_argument("--watch", action="store_true", help="watch directory for changes and regenerate accordingly, clean and exit on interrupt (requires that inotifywait is installed)")
+parser.add_argument("rest", nargs=argparse.REMAINDER, help="additional arguments passed to gpp binary (see gpp --help)")
+args = parser.parse_args()
+
+if (args.directory is not None):
+    os.chdir(args.directory)
+
+def flatten(xss):
+    return [x for xs in xss for x in xs]
+
+def process_cwd(clean):
+    for $path in set(flatten([pg`./**/*.gpp.*`, pg`./**/*.gpp`])):
+        $output_name = $path.name.replace('.gpp.', '.')
+        if $output_name.endswith('.gpp'):
+            $output_name = $output_name[:-len('.gpp')]
+        $output_path = $path.with_name($output_name)
+        if not clean:
+            if not args.silent:
+                echo gpp $path -o $output_path @(args.rest)
+            gpp $path -o $output_path @(args.rest)
+        else:
+            if not args.silent:
+                echo rm $output_path
+            rm $output_path
+
+if not args.watch:
+    if not args.command:
+        process_cwd(args.clean)
+    else:
+        process_cwd(False)
+        $[sh -c @(args.command)]
+        process_cwd(True)
+else:
+    process_cwd(False)
+    try:
+        for line in !(inotifywait -m -e close_write .):
+            lineParts = line.strip().split()
+            dir = lineParts[0]
+            file = lineParts[2]
+            if file.startswith('.'):
+                continue
+            if not file.endswith('.gpp') and not '.gpp.' in file:
+                continue
+            process_cwd(False)
+    except KeyboardInterrupt:
+        process_cwd(True)
+

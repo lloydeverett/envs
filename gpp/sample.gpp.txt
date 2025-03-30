@@ -1,0 +1,7 @@
+
+#define FOO world
+
+Hello world
+
+#exec xonsh -c "print('hello world from xonsh')"
+
