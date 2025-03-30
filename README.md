@@ -15,4 +15,5 @@ devenv shell
  - `home` - shell and editor environment focused on xonsh and vim
  - `vim-home` - like `home`, but using vim as a terminal session manager / multiplexer
  - `podman-example` - an experiment in running rootless and daemonless containers inside a devenv (see associated README, there are some prerequisites for the host OS)
+ - `gpp` - experimenting with [GPP](https://files.nothingisreal.com/software/gpp/gpp.html), the generic preprocessor + an implementation of a tool that calls gpp recursively
 
