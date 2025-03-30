@@ -27,7 +27,7 @@
   '';
 
   enterShell = ''
-    SHELL=$DEVENV_ROOT/shellcmd $DEVENV_ROOT/shellcmd
+    SHELL=$DEVENV_ROOT/shellcmd exec $DEVENV_ROOT/shellcmd
   '';
 
   # https://devenv.sh/tasks/
