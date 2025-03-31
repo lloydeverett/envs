@@ -10,6 +10,8 @@
     pkgs.xonsh
     pkgs.yq
     pkgs.sqlite
+    pkgs.neovim
+    pkgs.nushell
   ];
 
   # https://devenv.sh/languages/

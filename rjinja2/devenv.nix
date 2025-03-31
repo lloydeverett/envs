@@ -10,6 +10,7 @@
     pkgs.gpp
     pkgs.xonsh
     pkgs.inotify-tools
+    pkgs.jinja2-cli
   ];
 
   # https://devenv.sh/languages/

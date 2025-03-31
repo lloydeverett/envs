@@ -1,2 +1,4 @@
 $VI_MODE = True
+$EDITOR = 'nvim'
+aliases['vim'] = 'nvim'
 
