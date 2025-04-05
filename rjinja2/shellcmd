@@ -1,2 +1,7 @@
-exec xonsh --rc $DEVENV_ROOT/.xonshrc
+if [ -z "$DEVENV_SHELL_CMD" ]; then
+    exec xonsh --rc $DEVENV_ROOT/.xonshrc
+else
+    cd "$DEVENV_SHELL_CD"
+    exec sh -c "$DEVENV_SHELL_CMD"
+fi
 

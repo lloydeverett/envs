@@ -23,9 +23,9 @@
   # services.postgres.enable = true;
 
   # https://devenv.sh/scripts/
-  scripts.hello.exec = ''
-    echo hello from $GREET
-  '';
+  # scripts.hello.exec = ''
+  #   echo hello from $GREET
+  # '';
 
   enterShell = ''
     SHELL=$DEVENV_ROOT/shellcmd exec $DEVENV_ROOT/shellcmd
@@ -33,6 +33,7 @@
 
   # https://devenv.sh/tasks/
   # tasks = {
+  #   "foo:bar".exec = "echo hi";
   #   "myproj:setup".exec = "mytool build";
   #   "devenv:enterShell".after = [ "myproj:setup" ];
   # };
