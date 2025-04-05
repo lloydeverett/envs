@@ -12,6 +12,7 @@
     pkgs.sqlite
     pkgs.neovim
     pkgs.nushell
+    pkgs.inotify-tools
   ];
 
   # https://devenv.sh/languages/

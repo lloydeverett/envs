@@ -14,13 +14,13 @@ home = {
 produce(globals, home)
 
 vim_home = {
-    'template': 'vim_home'
+    'template': 'vim_home',
     'name': 'my_vim_home'
 }
 produce(globals, vim_home)
 
 podman = {
-    'name': 'template'
+    'name': 'template',
     'name': 'my_podman'
 }
 produce(globals, podman)
