@@ -51,3 +51,8 @@ export PATH="$PATH:$(realpath ~/envs/bin)"
 $PATH.append($(realpath '~/envs/bin').strip())
 ```
 
+## `./dotfiles`
+
+A place for my shell environment preferences.
+
+
