@@ -4,7 +4,7 @@ import subprocess
 
 # Unfortunately, devenv doesn't expose any obvious way to expose scripts from
 # inside the environment to the outside world. Using 'devenv shell' and specifying
-# a subcommand or getting clear with environment variables gets us pretty close,
+# a subcommand or getting clever with environment variables gets us pretty close,
 # but there's still a whole bunch of noise printed to the console. So, here's
 # a script to get around that problem by carefully using pipes to get the output
 # we care about.
