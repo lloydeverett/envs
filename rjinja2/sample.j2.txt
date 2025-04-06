@@ -1,7 +1,5 @@
 
+Here's a line populated from the template data:
+
 {{ env.world }}
-
-Hello world
-
-#exec xonsh -c "print('hello world from xonsh')"
 

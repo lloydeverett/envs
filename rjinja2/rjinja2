@@ -1,5 +1,9 @@
 #!/usr/bin/env xonsh
 
+# TODO: what's missing here is a nice Python interface in addition to the shell interface
+#       also, we might want to start using the jinja2 Python API rather than calling out
+#       to the jinja2 binary (potentially as an opt-in though?)
+
 import os
 import sys
 import argparse
@@ -10,6 +14,7 @@ parser.add_argument("--silent", action="store_true", help="suppress jinja2 invoc
 parser.add_argument("--clean", action="store_true", help="delete output files rather than generating them (ignored if --command or --watch is specified)")
 parser.add_argument("--command", type=str, help="generate files, run command (e.g. shell session), then clean and exit (ignored if --watch is specified)", default=None)
 parser.add_argument("--watch", action="store_true", help="watch directory for changes and regenerate accordingly, clean and exit on interrupt (requires that inotifywait is installed)")
+parser.add_argument("--stdin", action="store_true", help="read stdin into a buffer, and write buffer to stdin of each jinja2 invocation")
 parser.add_argument("rest", nargs=argparse.REMAINDER, help="additional arguments passed to jinja2 binary (see jinja2 --help)")
 args = parser.parse_args()
 
@@ -19,6 +24,10 @@ if (args.directory is not None):
 def flatten(xss):
     return [x for xs in xss for x in xs]
 
+stdin = None
+if (args.stdin):
+    stdin = sys.stdin.read()
+
 def process_cwd(clean):
     for $path in set(flatten([pg`./**/*.j2.*`, pg`./**/*.j2`])):
         $output_name = $path.name.replace('.j2.', '.')
@@ -27,12 +36,17 @@ def process_cwd(clean):
         $output_path = $path.with_name($output_name)
         if not clean:
             if not args.silent:
-                echo j2 $path -o $output_path @(args.rest)
-            jinja2 $path -o $output_path @(args.rest)
+                echo jinja2 $path -o $output_path @(args.rest)
+
+            if args.stdin:
+                printf '%s\n' @(stdin) | jinja2 $path -o $output_path @(args.rest)
+            else:
+                jinja2 $path -o $output_path @(args.rest)
         else:
             if not args.silent:
                 echo rm $output_path
-            jinja2 $output_path
+
+            rm $output_path
 
 if not args.watch:
     if not args.command:

@@ -1,5 +1,13 @@
 import os
-from stdgoosey import produce
+import json
+
+if __xonsh__.env.get('RJINJA2_PATH') is None or $RJINJA2_PATH == '':
+    $RJINJA2_PATH = 'rjinja2'
+
+def produce(globals, env, path):
+    template_path = os.path.join(path, env['template'])
+    data = { 'globals': globals, 'env': env }
+    printf '%s\n' @(json.dumps(data)) | $RJINJA2_PATH @(template_path) '-' --format=json
 
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -27,7 +35,6 @@ podman = {
     'name': 'my_podman'
 }
 # produce(globals, podman, path)
-
 test = {
     'template': '.',
     'hello': 'HELLO YES',

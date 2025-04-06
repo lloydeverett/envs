@@ -1,0 +1,61 @@
+# Unfortunately, devenv doesn't expose any obvious way to expose scripts from
+# inside the environment to the outside world. Using 'devenv shell' and specifying
+# a subcommand or getting clever with environment variables gets us pretty close,
+# but there's still a whole bunch of noise printed to the console. So, here's
+# a script to get around that problem by carefully using pipes to get the output
+# we care about.
+#
+# NOTE:
+#   This script requires the devenv in question to handle the $DEVENV_SHELL_CMD
+#   and $DEVENV_SHELL_CD environment variables if present when entering the devenv
+#   shell by executing $DEVENV_SHELL_CMD in the working directory represented by
+#   $DEVENV_SHELL_CD in favour of starting the usual shell session. It'd likely be
+#   possible to avoid this requirement via subcommands to 'devenv shell'; we just
+#   haven't bothered trying.
+
+import os
+import sys
+import subprocess
+
+script_path = os.path.abspath(__file__)
+script_dir = os.path.dirname(script_path)
+
+if len(sys.argv) < 3 or sys.argv[1] == '-h' or sys.argv[1] == '--help':
+    print('usage: devenvx <devenv root> <command> ...' +
+          f'\nspecify the devenv root relative to the directory of this script: {script_dir}', file=sys.stderr)
+    sys.exit(-1)
+
+arg_devenv_root = sys.argv[1]
+arg_command = sys.argv[2]
+arg_rest = ' '.join(sys.argv[3:])
+
+temp_dir=$(mktemp -d /tmp/out.XXXXXX).strip()
+
+if not temp_dir.startswith('/tmp/out.'):
+    print('error: Failed to create temporary file with mktemp', file=sys.stderr)
+    sys.exit(-1)
+
+try:
+    stdout_fifo = temp_dir + '/stdout'
+    stderr_fifo = temp_dir + '/stderr'
+
+    mkfifo @(stdout_fifo)
+    mkfifo @(stderr_fifo)
+
+    orig_cwd = os.getcwd()
+
+    devenv_dir = os.path.join(script_dir, arg_devenv_root)
+    binary_path = os.path.join(devenv_dir, arg_command)
+
+    $DEVENV_SHELL_CMD = f'{binary_path} {arg_rest} > {stdout_fifo} 2> {stderr_fifo}'
+    $DEVENV_SHELL_CD = orig_cwd
+
+    cat @(stdout_fifo) &
+    cat @(stderr_fifo) > /dev/stderr &
+
+    os.chdir(devenv_dir)
+
+    devenv shell /dev/null 2> /dev/null
+finally:
+    rm -rf @(temp_dir)
+

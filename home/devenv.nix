@@ -30,7 +30,12 @@
   '';
 
   enterShell = ''
-    SHELL=$DEVENV_ROOT/shellcmd exec $DEVENV_ROOT/shellcmd
+    if [ -z "$NVIM_AS_MULTIPLEXER" ]; then
+        SHELL=$DEVENV_ROOT/shellcmd exec $DEVENV_ROOT/shellcmd
+    else
+        unset NVIM_AS_MULTIPLEXER
+        SHELL=$DEVENV_ROOT/shellcmd exec nvim +"ter ++curwin"
+    fi
   '';
 
   # https://devenv.sh/tasks/
