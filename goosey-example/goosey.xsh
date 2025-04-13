@@ -1,6 +1,10 @@
 import os
 import json
 
+# we want the code here to tend towards something that becomes declarative, i.e. not xonsh --
+# something we can run in a browser with pyodide; let's factor out logic into subroutines
+# accordingly as and when it makes sense
+
 def produce(globals, env):
     template_path = os.path.join('.', env['template'])
     data = { 'globals': globals, 'env': env }

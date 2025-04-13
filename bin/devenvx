@@ -1,5 +1,4 @@
 #!/usr/bin/env xonsh
-
 # Unfortunately, devenv doesn't expose any obvious way to expose scripts from
 # inside the environment to the outside world. Using 'devenv shell' and specifying
 # a subcommand or getting clever with environment variables gets us pretty close,
@@ -30,12 +29,8 @@ arg_devenv_root = sys.argv[1]
 arg_command = sys.argv[2]
 arg_rest = ' '.join(sys.argv[3:])
 
-out_read_fd, out_write_fd = os.pipe()
-out_write_path = f'/proc/{os.getpid()}/fd/{out_write_fd}'
-out_read_path = f'/proc/{os.getpid()}/fd/{out_read_fd}'
-err_read_fd, err_write_fd = os.pipe()
-err_write_path = f'/proc/{os.getpid()}/fd/{err_write_fd}'
-err_read_path = f'/proc/{os.getpid()}/fd/{err_read_fd}'
+out_write_path = f'/proc/{os.getpid()}/fd/1'
+err_write_path = f'/proc/{os.getpid()}/fd/2'
 
 orig_cwd = os.getcwd()
 
@@ -44,9 +39,6 @@ binary_path = os.path.join(devenv_dir, arg_command)
 
 $DEVENV_SHELL_CMD = f'{binary_path} {arg_rest} > {out_write_path} 2> {err_write_path}'
 $DEVENV_SHELL_CD = orig_cwd
-
-cat @(out_read_path) &
-cat @(err_read_path) > /dev/stderr &
 
 os.chdir(devenv_dir)
 
