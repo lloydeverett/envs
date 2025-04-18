@@ -1,4 +1,5 @@
 $VI_MODE = True
 $EDITOR = 'nvim'
+$FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 aliases['vim'] = 'nvim'
 

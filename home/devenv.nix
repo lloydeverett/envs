@@ -13,6 +13,10 @@
     pkgs.neovim
     pkgs.nushell
     pkgs.inotify-tools
+    pkgs.fzf
+    pkgs.tmux
+    pkgs.ripgrep
+    pkgs.bat
   ];
 
   # https://devenv.sh/languages/
@@ -30,12 +34,7 @@
   '';
 
   enterShell = ''
-    if [ -z "$NVIM_AS_MULTIPLEXER" ]; then
-        SHELL=$DEVENV_ROOT/shellcmd exec $DEVENV_ROOT/shellcmd
-    else
-        unset NVIM_AS_MULTIPLEXER
-        SHELL=$DEVENV_ROOT/shellcmd exec nvim +"ter ++curwin"
-    fi
+    SHELL=$DEVENV_ROOT/shellcmd exec $DEVENV_ROOT/shellcmd
   '';
 
   # https://devenv.sh/tasks/
